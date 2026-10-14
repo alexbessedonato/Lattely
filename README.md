@@ -1,25 +1,21 @@
-# Lattely homepage prototype
+# Lattely
 
-Throwaway UI exploration: three layouts with a header/logo, hero, three featured café cards, ranks 4–10, and a footer. All café data, ratings, reviews, and example distances are fictional. Search controls are a disabled preview; the only interactions are navigation and design switching.
+A static Barcelona café discovery demo built with Next.js, React, TypeScript, and Tailwind CSS 4. The homepage uses the selected editorial layout and warm cream/ochre/brown palette.
+
+It displays ten fictional cafés: three featured cards, then ranks 4–10 in a list. Ratings, review counts, and example distances are simulated. Location, radius, sort, and search controls are disabled and labeled “Preview — search coming next.” Navigation links only move between sections of the page.
 
 ## Run locally
 
-Recommended runtime: Node.js 24 LTS (`.nvmrc`). This preview was checked on the available Node.js 26.10.0 runtime. The scripts use Webpack because Turbopack compiler-worker permissions were blocked in this environment.
+Recommended runtime: Node.js 24 LTS (`.nvmrc`). Checks are run using the runtime available in the workspace. Existing scripts use Webpack because Turbopack compiler-worker permissions were blocked in this environment.
 
 ```sh
 npm install
-npm run prototype
+npm run dev
 ```
 
-Open the Local URL printed by Next.js, then `/prototype/homepage?variant=A`.
+Open the Local URL printed by Next.js at `/`. The retained `npm run prototype` script is an alias for the same development server; the prototype route and switcher have been removed.
 
-- `A`: Editorial with warm palette — A's layout with C's cream, ochre, and brown colors, following the user's selected direction; three equal featured cards above the ranked list.
-- `B`: Night roast — bold dark hero, dominant first place, stacked runners-up.
-- `C`: Neighborhood guide — printed-guide layout with featured cards beside the list.
-
-Use the floating arrows or your keyboard's left/right arrows to switch. The selected design is stored in the URL. The switcher is hidden in production builds. The root route redirects to the prototype.
-
-## Checks
+## Verification
 
 ```sh
 npm run lint
@@ -27,6 +23,8 @@ npm run typecheck
 npm run build
 ```
 
-No database, credentials, external images, or paid APIs are needed. TanStack Query and all backend infrastructure are deferred. Unit/browser test tooling is not installed for this throwaway exploration.
+No database, API keys, external assets, or additional services are required. Geolocation, filtering, sorting behavior, TanStack Query, and all backend infrastructure remain deferred beyond ticket 001.
 
-The selected direction is A’s structure with C’s palette. The full exploration is preserved on the `prototype/homepage` Git branch. Rewrite the chosen design as the real homepage in a separate implementation step; no implementation issue is linked yet.
+## Prototype reference
+
+The original UI exploration is preserved in Git commit `946c3f1` (`chore: initial UI prototype`). Inspect it with `git show 946c3f1:src/features/discover-cafes/ui/homepage-prototype.tsx`. No separate prototype branch is needed.

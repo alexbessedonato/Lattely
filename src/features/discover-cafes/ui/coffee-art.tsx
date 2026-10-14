@@ -1,5 +1,7 @@
-// Original vector illustrations for the throwaway homepage; no external assets.
-export function CoffeeArtPrototype({ motif = "cup", hero = false }: { motif?: "cup" | "pot" | "glass"; hero?: boolean }) {
+import type { CoffeeArtProps } from "@/features/discover-cafes/types/coffee-art-props";
+
+// Original decorative vector illustrations; no external assets.
+export function CoffeeArt({ motif = "cup", hero = false }: CoffeeArtProps) {
   return <svg viewBox="0 0 480 340" fill="none" aria-hidden="true" className={hero ? "coffee-art hero-art" : "coffee-art"}>
     <circle cx="242" cy="171" r="133" fill="currentColor" opacity=".08" />
     <path d="M63 268C125 240 354 240 417 268M99 285C166 264 319 264 378 285" stroke="currentColor" strokeWidth="2" opacity=".25" />
