@@ -8,6 +8,7 @@
     "build": "next build --webpack",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
+    "test": "node --test src/features/discover-cafes/lib/*.test.ts src/features/discover-cafes/model/*.test.ts",
     "lint": "eslint src"
   },
   "dependencies": {

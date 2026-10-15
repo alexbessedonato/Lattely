@@ -1,4 +1,5 @@
 import type { CafeCardProps } from "@/features/discover-cafes/types/cafe-card-props";
+import { formatDistance } from "@/features/discover-cafes/lib/format-distance";
 import { CoffeeArt } from "@/features/discover-cafes/ui/coffee-art";
 
 export function CafeCard({ cafe, rank }: CafeCardProps) {
@@ -10,7 +11,7 @@ export function CafeCard({ cafe, rank }: CafeCardProps) {
         <span className="picture-caption">{cafe.tag}</span>
       </div>
       <div className="cafe-copy">
-        <div className="cafe-meta"><span>{cafe.neighborhood}</span><span>{cafe.exampleDistance} · example</span></div>
+        <div className="cafe-meta"><span>{cafe.neighborhood}</span><span>Approx. {formatDistance(cafe.distanceMeters)}</span></div>
         <div className="cafe-title">
           <h3 id={`cafe-${cafe.id}`}>{cafe.name}</h3>
           <span className="rating" aria-label={`Simulated rating: ${cafe.rating.toFixed(1)} out of 5`}><span aria-hidden="true">★</span> {cafe.rating.toFixed(1)}</span>

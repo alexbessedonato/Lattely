@@ -6,7 +6,7 @@ export function SearchPreview() {
       <fieldset disabled className="search-fields" aria-describedby="preview-note">
         <legend className="sr-only">Search cafés — static preview</legend>
         <label>
-          <span>YOUR NEIGHBORHOOD</span>
+          <span>SEARCH CENTER</span>
           <select defaultValue="catalunya" aria-describedby="preview-note">
             <option value="catalunya">{barcelonaConfig.fallbackName}</option>
           </select>
@@ -14,21 +14,18 @@ export function SearchPreview() {
         <label>
           <span>HOW FAR?</span>
           <select defaultValue={barcelonaConfig.defaultRadiusMeters} aria-describedby="preview-note">
-            {barcelonaConfig.radiusOptions.map(option => (
-              <option key={option.label} value={option.meters ?? "anywhere"}>{option.label}</option>
-            ))}
+            <option value={barcelonaConfig.defaultRadiusMeters}>2 km</option>
           </select>
         </label>
         <label>
           <span>SORT BY</span>
           <select defaultValue="highest-rated" aria-describedby="preview-note">
             <option value="highest-rated">Highest-rated</option>
-            <option value="nearest">Nearest</option>
           </select>
         </label>
         <button className="search-cta" type="button" aria-describedby="preview-note">Search cafés <span aria-hidden="true">↗</span></button>
       </fieldset>
-      <p id="preview-note">Preview — search coming next</p>
+      <p id="preview-note">Default location · 2 km radius · Controls are previews; location and search actions are coming next.</p>
     </section>
   );
 }

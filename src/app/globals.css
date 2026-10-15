@@ -50,6 +50,8 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid
 .section-heading h2 { font-family: Georgia, "Times New Roman", serif; font-size: 38px; line-height: 1.1; letter-spacing: -1.1px; font-weight: 400; margin: 0; }
 .section-aside { font-size: 11px; white-space: nowrap; padding-bottom: 5px; }
 .section-aside > span { margin-left: 10px; }
+.ranking-summary { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0 0 24px; }
+.empty-results { border: 1px solid var(--line); padding: 28px; font-size: 16px; }
 .podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 .featured-cafe { border: 1px solid var(--line); }
 .cafe-picture { position: relative; background: #dfe5d4; color: #374c3b; padding: 28px 16px 36px; }

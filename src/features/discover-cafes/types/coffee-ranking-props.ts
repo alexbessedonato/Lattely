@@ -1,3 +1,3 @@
-import type { MockCafe } from "@/features/discover-cafes/types/mock-cafe";
+import type { NearbyCafe } from "@/features/discover-cafes/types/nearby-cafe";
 
-export type CoffeeRankingProps = { cafes: readonly MockCafe[] };
+export type CoffeeRankingProps = { cafes: readonly NearbyCafe[]; centerName: string };

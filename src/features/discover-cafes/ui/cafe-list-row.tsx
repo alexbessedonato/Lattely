@@ -1,4 +1,5 @@
 import type { CafeListRowProps } from "@/features/discover-cafes/types/cafe-list-row-props";
+import { formatDistance } from "@/features/discover-cafes/lib/format-distance";
 import { CoffeeArt } from "@/features/discover-cafes/ui/coffee-art";
 
 export function CafeListRow({ cafe, rank }: CafeListRowProps) {
@@ -9,7 +10,7 @@ export function CafeListRow({ cafe, rank }: CafeListRowProps) {
       <div className="list-name">
         <h4>{cafe.name}</h4>
         <p>{cafe.neighborhood}<span className="list-tag"> · {cafe.tag}</span></p>
-        <p className="list-distance">{cafe.exampleDistance} · example distance</p>
+        <p className="list-distance">Approx. {formatDistance(cafe.distanceMeters)} · straight-line</p>
       </div>
       <div className="list-score">
         <strong aria-label={`Simulated rating: ${cafe.rating.toFixed(1)} out of 5`}><span aria-hidden="true">★</span> {cafe.rating.toFixed(1)}</strong>

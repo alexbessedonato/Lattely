@@ -1,5 +1,7 @@
 export const barcelonaConfig = {
   fallbackName: "Plaça de Catalunya",
+  // Approximate center of the square, used for the local demo's default search.
+  fallbackCoordinates: { latitude: 41.387, longitude: 2.17 },
   defaultRadiusMeters: 2000,
   radiusOptions: [
     { label: "500 m", meters: 500 },

@@ -4,7 +4,7 @@
 
 Lattely helps coffee enjoyers discover highly rated cafés near a selected location. Barcelona is the initial service area. The MVP uses local fictional café data, with simulated ratings on every record; live café data is undecided.
 
-This describes the complete mock MVP. The current ticket implements only its first static page; later behavior is not part of that ticket.
+This describes the complete mock MVP. Implement only the current ticket identified in AGENTS.md; later behavior is not part of that ticket.
 
 ## MVP behavior
 

@@ -15,7 +15,7 @@ Applies throughout this repository. Build one complete ticket at a time; planned
 
 ## Read on demand
 
-- Before implementing the next slice, read `docs/tickets/001-static-page.md`. It is the current ticket; update this pointer when a later ticket becomes current.
+- Before implementing the next slice, read `docs/tickets/002-default-nearby-cafes.md`. It is the current ticket; update this pointer when a later ticket becomes current.
 - When defining user-visible behavior or checking MVP requirements, read `docs/product-spec.md`. The full MVP scope does not expand the current ticket.
 - When placing code, designing data/provider interfaces, or changing module dependencies, read `docs/architecture.md`. Its folder guide is created incrementally.
 - Before work involving Neon/Prisma, notifications, tracing, live café providers, or deployment, read `docs/decisions/future-stack.md`. Those integrations remain deferred until requested.
