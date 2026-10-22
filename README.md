@@ -1,46 +1,88 @@
 # Lattely
 
-A Barcelona café discovery demo built with Next.js, React, TypeScript, and Tailwind CSS 4. The homepage uses the selected editorial layout and warm cream/ochre/brown palette.
+Find your next good coffee in Barcelona. Lattely is a café discovery demo with neighborhood search, browser geolocation, and recommendations ranked by rating.
 
-On page load, it displays fictional cafés within 2 km of Plaça de Catalunya. The existing ten fixtures yield eight initial results: three featured cards, then ranks 4–8. Ratings and review counts are simulated; displayed distances are approximate straight-line calculations.
+Built with **Next.js App Router, React, strict TypeScript, and Tailwind CSS 4**.
 
-Choose any of Barcelona’s 73 official barris from the alphabetical dropdown, then a radius of 500 m, 1 km, 2 km, 5 km, 10 km, or Anywhere. Changes stay in the form until **Search cafés** is submitted. Anywhere includes all ten demo cafés, with distances measured from the selected center. Results always rank by rating descending, review count descending, distance ascending, then stable ID ascending; there is no sorting control.
+> All ten cafés, ratings, and review counts are fictional demo data. This project currently demonstrates the discovery experience; it does not provide live café listings or verified reviews.
 
-**Use my location** requests fresh browser coordinates and searches immediately with the currently selected radius. After success, Your location remains available in the dropdown so visitors can switch between it and a barri. Permission denial, unavailable/invalid coordinates, unsupported geolocation, timeout, or coordinates outside demo coverage immediately search Plaça de Catalunya with a specific fallback explanation. The action supports explicit retries. Choosing a center or submitting the form while locating cancels that pending request; obsolete callbacks cannot replace a newer choice or retry.
+## Features
 
-`NearbyDiscovery` composes the form and results. `useNearbyDiscovery` handles browser request lifetimes; `nearbyDiscoveryReducer` separates draft controls from the submitted search. `findNearbyCafes` derives distances, applies the selected inclusive radius (or no distance filter for Anywhere), and ranks results without modifying fixtures. `SearchControls` renders the form and location status; `CoffeeRanking` renders the applied center/radius, count, ranking, and empty-state guidance. Result and location changes use live status regions. Empty results never silently expand the radius.
+- **Browse all 73 Barcelona neighborhoods:** choose an official barri from an alphabetical, searchable picker, or start from Plaça de Catalunya.
+- **Search near you:** “Use my location” searches immediately with the selected radius. Your retrieved location remains available so you can switch between it and a neighborhood.
+- **Choose your distance:** 500 m, 1 km, 2 km, 5 km, 10 km, or Anywhere in the demo dataset.
+- **Highest-rated results:** cafés rank by rating, then review count, distance, and stable ID to resolve ties.
+- **Control when to search:** neighborhood and radius edits wait for “Search cafés.” The displayed results continue to describe the last applied search.
+- **Responsive search pickers:** full-width controls and readable bottom sheets on mobile, with centered dialogs on desktop, large option targets, and a filter for search centers. Keyboard navigation, visible focus, and announced location/result changes support accessible browsing.
 
-`src/shared/config/barcelona.ts` owns the default center, radius choices, and inclusive approximate demo service box: latitude 41.32–41.47, longitude 2.05–2.23. The box is not a municipal boundary. The local `barcelona-barris.ts` dataset contains official barri names/IDs and approximate centers derived from municipal polygons; all 73 centers fit the existing box. A radius around a barri center can include cafés in adjacent barris. See [data attribution and derivation](docs/barcelona-barris-data.md).
+## Getting started
 
-Coordinates remain in memory only, excluded from URLs, persistent storage, logs, and external requests. No runtime municipal API calls are needed.
-
-## Run locally
-
-Recommended runtime: Node.js 24 LTS (`.nvmrc`). Checks are run using the runtime available in the workspace. Existing scripts use Webpack because Turbopack compiler-worker permissions were blocked in this environment.
+Use Node.js 24 LTS or newer with native TypeScript support. The recommended version is recorded in `.nvmrc`.
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-Open the Local URL printed by Next.js at `/` using localhost or its loopback address; browser geolocation requires a secure context, and loopback is supported for local development. The retained `npm run prototype` script is an alias for the same development server; the prototype route and switcher have been removed.
+Open the local address printed by Next.js, usually [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
-## Verification
+No database, API keys, environment variables, or external services are needed. Browser geolocation works on localhost; a hosted version requires HTTPS and location permission.
+
+To run a production build locally:
+
+```sh
+npm run build
+npm start
+```
+
+## How discovery works
+
+The initial search shows cafés within 2 km of Plaça de Catalunya. Selecting a barri searches around an approximate central point, so results may include cafés in neighboring barris. Distances use the Haversine calculation and represent approximate straight-line distances, not walking routes.
+
+A finite radius includes cafés at or inside that distance. Anywhere removes the distance filter while retaining distances from the selected center. Because the demo contains only ten fictional cafés, some neighborhood searches return no results; the app never silently expands the radius.
+
+Open either picker to choose an option. Search-center filtering narrows the list of barris; choosing an option updates the form and closes the picker. Escape or the close button dismisses it. Keyboard users can move between options with the arrow keys, Home, and End. Submit “Search cafés” to apply the chosen center and radius.
+
+Location is requested only after clicking “Use my location.” If permission is denied, the browser cannot provide a usable location within ten seconds, or the coordinates fall outside demo coverage, the app searches around Plaça de Catalunya and explains the fallback. Choosing a center or submitting a search while locating prevents the pending response from overriding the newer choice.
+
+## Data and privacy
+
+Neighborhood names and administrative codes come from the **Ajuntament de Barcelona**. Approximate search centers are derived from its administrative polygons. The source data is licensed under **CC BY 4.0**; see [data attribution and derivation](docs/barcelona-barris-data.md).
+
+Search centers are validated against an approximate demo coverage box, not an official municipal boundary. Every bundled neighborhood center fits that box.
+
+User coordinates stay in memory. The application does not put them in URLs, persistent browser storage, logs, or external requests. Both neighborhood data and fictional café fixtures are bundled locally.
+
+## Project structure
+
+- `src/app` — routes, layouts, and global styles.
+- `src/features/discover-cafes/ui` — search controls, café cards, and result lists.
+- `src/features/discover-cafes/model` — draft/submitted search state, browser-location handling, filtering, and ranking.
+- `src/features/discover-cafes/data` — fictional cafés and official neighborhood search centers.
+- `src/features/discover-cafes/types` — feature-owned TypeScript contracts.
+- `src/shared` — Barcelona configuration, coordinates, and shared UI.
+
+Rendering is separate from state transitions and search calculations. The discovery reducer manages draft and applied selections; the hook manages browser requests; café results are calculated from the submitted search. The current feature needs no data-fetching library or backend.
+
+## Development checks
 
 ```sh
 npm run format:check
 npm run lint
 npm run typecheck
-npm run test
+npm test
 npm run build
 ```
 
-Run `npm run format` to format the project with Prettier. It uses two-space indentation, double quotes, semicolons, and an 80-character target line width to make long expressions and JSX easier to read. Generated files and lockfiles are excluded. `npm run format:check` checks formatting without changing files. Prettier handles layout; ESLint checks code rules.
+Use `npm run format` to apply Prettier formatting. Tests use Node’s built-in test runner and cover distance calculations, radius filtering, ranking ties, neighborhood data, search-state transitions, and location success, fallback, timeout, and cancellation.
 
-The distance/filtering/ranking, discovery-state, barrio-data, and browser-location outcome tests use Node's built-in test runner and native TypeScript support on Node.js 24+, without additional dependencies. Explicit `.ts` imports in those functions allow the tests to run the same source the page uses; TypeScript's `allowImportingTsExtensions` option permits these imports with the existing `noEmit` setup.
+Browser validation should cover keyboard interactions, pending location requests, retries, empty results, and mobile/desktop layouts. Automated location scenarios simulate browser callbacks; device accuracy and operating-system permission dialogs depend on the browser and device.
 
-No database, API keys, external assets, or additional services are required. Automatic location on load, new café datasets, TanStack Query, and all backend infrastructure remain deferred. Browser checks should cover keyboard activation, the pending state, each fallback, retry after timeout with an obsolete callback, an empty result, and mobile/desktop layout. Deterministic browser checks can simulate geolocation outcomes; actual device accuracy and permission prompts depend on the browser and operating system.
+## Documentation
 
-## Prototype reference
+- [Product specification](docs/product-spec.md) — broader MVP direction; includes behavior beyond the current implementation.
+- [Architecture](docs/architecture.md) — module responsibilities and conventions.
+- [Domain glossary](GLOSSARY.md) — terminology used throughout the project.
+- [Editable café search ticket](docs/tickets/004-editable-cafe-search.md) — implemented feature scope and validation.
 
-The original UI exploration is preserved in Git commit `946c3f1` (`chore: initial UI prototype`). Inspect it with `git show 946c3f1:src/features/discover-cafes/ui/homepage-prototype.tsx`. No separate prototype branch is needed.
+Live café data, accounts, reviews, favorites, maps, and backend infrastructure are outside the current demo.
