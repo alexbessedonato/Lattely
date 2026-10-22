@@ -1,3 +1,4 @@
+import { SearchPicker } from "@/features/discover-cafes/ui/search-picker";
 import type { SearchControlsProps } from "@/features/discover-cafes/types/search-controls-props";
 import type { LocationFallbackReason } from "@/features/discover-cafes/types/location-outcome";
 import { barcelonaBarris } from "@/features/discover-cafes/data/barcelona-barris";
@@ -33,44 +34,36 @@ export function SearchControls({
       >
         <fieldset className="search-fields" aria-describedby="search-note">
           <legend className="sr-only">Search cafés</legend>
-          <label>
-            <span>SEARCH CENTER</span>
-            <select
-              value={centerId}
-              onChange={(event) => onCenterChange(event.target.value)}
-            >
-              <option value="catalunya">{barcelonaConfig.fallbackName}</option>
-              {hasUserLocation && (
-                <option value="user-location">Your location</option>
-              )}
-              <optgroup label="Barcelona barris">
-                {barcelonaBarris.map((barri) => (
-                  <option key={barri.id} value={barri.id}>
-                    {barri.name}
-                  </option>
-                ))}
-              </optgroup>
-            </select>
-          </label>
-          <label>
-            <span>HOW FAR?</span>
-            <select
-              value={radiusMeters ?? "anywhere"}
-              onChange={(event) => {
-                const option = barcelonaConfig.radiusOptions.find(
-                  (item) =>
-                    String(item.meters ?? "anywhere") === event.target.value,
-                );
-                if (option) onRadiusChange(option.meters);
-              }}
-            >
-              {barcelonaConfig.radiusOptions.map((option) => (
-                <option key={option.label} value={option.meters ?? "anywhere"}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SearchPicker
+            label="SEARCH CENTER"
+            value={centerId}
+            searchable
+            options={[
+              { value: "catalunya", label: barcelonaConfig.fallbackName },
+              ...(hasUserLocation
+                ? [{ value: "user-location", label: "Your location" }]
+                : []),
+              ...barcelonaBarris.map((barri) => ({
+                value: barri.id,
+                label: barri.name,
+              })),
+            ]}
+            onChange={onCenterChange}
+          />
+          <SearchPicker
+            label="HOW FAR?"
+            value={String(radiusMeters ?? "anywhere")}
+            options={barcelonaConfig.radiusOptions.map((option) => ({
+              value: String(option.meters ?? "anywhere"),
+              label: option.label,
+            }))}
+            onChange={(value) => {
+              const option = barcelonaConfig.radiusOptions.find(
+                (item) => String(item.meters ?? "anywhere") === value,
+              );
+              if (option) onRadiusChange(option.meters);
+            }}
+          />
           <button className="search-cta" type="submit">
             Search cafés <span aria-hidden="true">↗</span>
           </button>

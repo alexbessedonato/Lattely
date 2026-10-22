@@ -186,31 +186,143 @@ select:focus-visible {
   gap: 25px;
   background: var(--paper);
 }
-.search-fields label {
+.search-field {
   min-width: 0;
   flex: 1;
   display: grid;
   gap: 7px;
 }
-.search-fields label:first-of-type {
+.search-field:first-of-type {
   flex: 1.6;
   border-right: 1px solid var(--line);
   padding-right: 22px;
 }
-.search-fields label > span {
+.search-field-label {
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 1.5px;
   color: var(--muted);
 }
-.search-fields select {
-  appearance: auto;
+.search-picker-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--art-paper);
+  color: var(--ink);
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+.search-picker-trigger > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-picker-trigger svg {
+  flex-shrink: 0;
+}
+.search-picker-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  width: min(480px, calc(100% - 40px));
+  max-height: min(640px, calc(100dvh - 48px));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--art-paper);
+  color: var(--ink);
+  box-shadow: 0 20px 80px #302c2533;
+}
+.search-picker-dialog::backdrop {
+  background: #302c2570;
+}
+.search-picker-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(640px, calc(100dvh - 48px));
+}
+.search-picker-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+}
+.search-picker-heading h2 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+.search-picker-heading button {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.search-picker-filter {
+  flex-shrink: 0;
+  min-width: 0;
+  margin: 0 18px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 14px;
+  font: inherit;
+  font-size: 16px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.search-picker-filter:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.search-picker-options {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 12px max(16px, env(safe-area-inset-bottom));
+}
+.search-picker-options button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 12px;
   border: 0;
+  border-bottom: 1px solid var(--line);
   background: transparent;
   color: var(--ink);
-  font-size: 13px;
-  width: 100%;
-  opacity: 1;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+.search-picker-options button[aria-pressed="true"] {
+  background: #e8dfc7;
+  font-weight: 600;
+}
+.search-picker-options button:hover {
+  background: var(--paper);
+}
+.search-picker-options button:focus-visible {
+  outline-offset: -3px;
+}
+.search-picker-options p {
+  padding: 12px;
+  font-size: 16px;
 }
 .search-cta {
   border: 0;
@@ -611,15 +723,28 @@ select:focus-visible {
   }
   .search-fields {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 18px;
     padding: 18px;
   }
-  .search-fields label:first-of-type {
+  .search-field:first-of-type {
     grid-column: 1 / -1;
     border-right: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 0 0 15px;
+    padding: 0;
+  }
+  .search-picker-trigger {
+    min-height: 54px;
+    font-size: 16px;
+  }
+  .search-picker-dialog {
+    inset: auto 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: calc(100dvh - 24px);
+    border-radius: 18px 18px 0 0;
+  }
+  .search-picker-panel {
+    max-height: min(640px, calc(100dvh - 24px));
   }
   .search-cta {
     grid-column: 1 / -1;
