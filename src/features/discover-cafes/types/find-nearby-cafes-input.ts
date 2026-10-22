@@ -4,4 +4,5 @@ import type { Coordinates } from "@/shared/types/coordinates";
 export type FindNearbyCafesInput = {
   cafes: readonly MockCafe[];
   center: Coordinates;
+  radiusMeters?: number | null;
 };

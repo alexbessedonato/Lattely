@@ -1,12 +1,21 @@
 import type { CoffeeRankingProps } from "@/features/discover-cafes/types/coffee-ranking-props";
 import { CafeCard } from "@/features/discover-cafes/ui/cafe-card";
 import { CafeListRow } from "@/features/discover-cafes/ui/cafe-list-row";
+import { barcelonaConfig } from "@/shared/config/barcelona";
 
 export function CoffeeRanking({
   cafes,
   centerName,
   locationLabel,
+  radiusMeters,
 }: CoffeeRankingProps) {
+  const radiusLabel = barcelonaConfig.radiusOptions.find(
+    (option) => option.meters === radiusMeters,
+  )?.label;
+  const searchArea =
+    radiusMeters === null
+      ? `across the Barcelona demo dataset · Distances from ${centerName}`
+      : `within ${radiusLabel} of ${centerName}`;
   return (
     <main
       id="ranking"
@@ -24,11 +33,14 @@ export function CoffeeRanking({
         </span>
       </div>
       <p className="ranking-summary" role="status" aria-atomic="true">
-        {cafes.length} demo {cafes.length === 1 ? "café" : "cafés"} within 2 km
-        of {centerName} · {locationLabel}
+        {cafes.length} demo {cafes.length === 1 ? "café" : "cafés"} {searchArea}{" "}
+        · {locationLabel}
       </p>
       {cafes.length === 0 ? (
-        <p className="empty-results">No demo cafés within 2 km</p>
+        <p className="empty-results">
+          No demo cafés {searchArea}. Choose a larger radius or Anywhere, then
+          Search cafés.
+        </p>
       ) : (
         <div className="podium">
           {cafes.slice(0, 3).map((cafe, i) => (

@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { mockCafes } from "@/features/discover-cafes/data/mock-cafes";
 import { findNearbyCafes } from "@/features/discover-cafes/model/find-nearby-cafes";
+import {
+  initialNearbyDiscoveryState,
+  nearbyDiscoveryReducer,
+} from "@/features/discover-cafes/model/nearby-discovery-reducer";
 import { requestBrowserLocation } from "@/features/discover-cafes/model/request-browser-location";
-import type { LocationOutcome } from "@/features/discover-cafes/types/location-outcome";
-import { barcelonaConfig } from "@/shared/config/barcelona";
 
 export function useNearbyDiscovery() {
-
-  const [outcome, setOutcome] = useState<LocationOutcome | null>(null);
-  const [isLocating, setIsLocating] = useState(false);
-
+  const [state, dispatch] = useReducer(
+    nearbyDiscoveryReducer,
+    initialNearbyDiscoveryState,
+  );
   const pending = useRef(false);
   const cancelRequest = useRef<(() => void) | null>(null);
 
@@ -23,45 +25,44 @@ export function useNearbyDiscovery() {
     [],
   );
 
+  function cancelLocation() {
+    cancelRequest.current?.();
+    cancelRequest.current = null;
+    pending.current = false;
+  }
+
+  function selectCenter(centerId: string) {
+    cancelLocation();
+    dispatch({ type: "center-selected", centerId });
+  }
+
+  function selectRadius(radiusMeters: number | null) {
+    dispatch({ type: "radius-selected", radiusMeters });
+  }
+
+  function search() {
+    cancelLocation();
+    dispatch({ type: "search-submitted" });
+  }
+
   function useMyLocation() {
     if (pending.current) return;
     pending.current = true;
-    setIsLocating(true);
+    dispatch({ type: "location-started" });
     cancelRequest.current = requestBrowserLocation(
       navigator.geolocation,
-      (result) => {
+      (outcome) => {
         pending.current = false;
-        setOutcome(result);
-        setIsLocating(false);
+        dispatch({ type: "location-resolved", outcome });
       },
     );
   }
 
-  const center =
-    outcome?.status === "success"
-      ? outcome.center
-      : barcelonaConfig.fallbackCoordinates;
+  const cafes = findNearbyCafes({
+    cafes: mockCafes,
+    center: state.submitted.center,
+    radiusMeters: state.submitted.radiusMeters,
+  });
 
-  const centerName =
-    outcome?.status === "success"
-      ? "your location"
-      : barcelonaConfig.fallbackName;
-
-  const locationLabel =
-    outcome === null
-      ? "Default location"
-      : outcome.status === "success"
-        ? "Current location"
-        : "Fallback location";
-
-  const cafes = findNearbyCafes({ cafes: mockCafes, center });
-
-  return {
-    cafes,
-    centerName,
-    locationLabel,
-    outcome,
-    isLocating,
-    useMyLocation,
-  };
+  return { state, cafes, selectCenter, selectRadius, search, useMyLocation };
 }

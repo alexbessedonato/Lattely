@@ -6,13 +6,30 @@ import type { NearbyCafe } from "@/features/discover-cafes/types/nearby-cafe";
 export function findNearbyCafes({
   cafes,
   center,
+  radiusMeters = barcelonaConfig.defaultRadiusMeters,
 }: FindNearbyCafesInput): NearbyCafe[] {
+
+  if (
+    !barcelonaConfig.radiusOptions.some(
+      (option) => option.meters === radiusMeters,
+    )
+  ) {
+    throw new RangeError("Choose a configured search radius.");
+  }
+  
   return cafes
     .map((cafe) => ({
       ...cafe,
       distanceMeters: calculateHaversineDistance(center, cafe),
     }))
     .filter(
-      (cafe) => cafe.distanceMeters <= barcelonaConfig.defaultRadiusMeters,
+      (cafe) => radiusMeters === null || cafe.distanceMeters <= radiusMeters,
+    )
+    .sort(
+      (a, b) =>
+        b.rating - a.rating ||
+        b.reviewCount - a.reviewCount ||
+        a.distanceMeters - b.distanceMeters ||
+        (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
     );
 }

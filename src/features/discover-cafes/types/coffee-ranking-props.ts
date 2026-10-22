@@ -4,4 +4,5 @@ export type CoffeeRankingProps = {
   cafes: readonly NearbyCafe[];
   centerName: string;
   locationLabel: string;
+  radiusMeters: number | null;
 };

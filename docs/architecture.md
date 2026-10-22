@@ -1,6 +1,6 @@
 # Architecture
 
-Use these conventions when implementing a ticket. This is a placement guide, not a requirement to build every folder or adapter now. The current nearby-results slice needs routes, feature UI, typed fixtures, and pure distance/filtering functions. Its local calculation needs no provider or query wiring.
+Use these conventions when implementing a ticket. This is a placement guide, not a requirement to build every folder or adapter now. The current nearby-results slice needs routes, feature UI, typed fixtures, and pure distance/filtering functions. Its local calculation needs no provider or query wiring. Ticket 004 keeps draft controls separate from the submitted center and radius in a feature reducer; only form submission or a resolved explicit location request changes the applied search. Browser request cancellation remains in the hook. The local `data/barcelona-barris.ts` dataset owns the 73 official barrio names, IDs, and approximate centers, with derivation and attribution in `docs/barcelona-barris-data.md`.
 
 ## Modules and responsibilities
 

@@ -5,7 +5,6 @@ export function requestBrowserLocation(
   geolocation: Pick<Geolocation, "getCurrentPosition"> | undefined,
   onComplete: (outcome: LocationOutcome) => void,
 ): () => void {
-
   if (!geolocation) {
     onComplete({ status: "fallback", reason: "unsupported" });
     return () => {};
@@ -26,7 +25,6 @@ export function requestBrowserLocation(
 
   try {
     geolocation.getCurrentPosition(
-
       // Success callback
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -73,7 +71,7 @@ export function requestBrowserLocation(
   } catch {
     complete({ status: "fallback", reason: "unavailable" });
   }
-  
+
   return () => {
     active = false;
     clearTimeout(timeout);
