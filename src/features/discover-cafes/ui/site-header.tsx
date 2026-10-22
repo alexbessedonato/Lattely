@@ -8,7 +8,9 @@ export function SiteHeader() {
         <a href="#ranking">The shortlist</a>
         <a href="#our-idea">Our idea</a>
       </nav>
-      <span className="city-label"><span aria-hidden="true">◉</span> Barcelona, ES</span>
+      <span className="city-label">
+        <span aria-hidden="true">◉</span> Barcelona, ES
+      </span>
     </header>
   );
 }
