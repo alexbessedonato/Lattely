@@ -2,6 +2,12 @@ import type { CoffeeRankingProps } from "@/features/discover-cafes/types/coffee-
 import { CafeCard } from "@/features/discover-cafes/ui/cafe-card";
 import { CafeListRow } from "@/features/discover-cafes/ui/cafe-list-row";
 import { barcelonaConfig } from "@/shared/config/barcelona";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/shared/ui/empty";
 
 export function CoffeeRanking({
   cafes,
@@ -37,10 +43,15 @@ export function CoffeeRanking({
         · {locationLabel}
       </p>
       {cafes.length === 0 ? (
-        <p className="empty-results">
-          No demo cafés {searchArea}. Choose a larger radius or Anywhere, then
-          Search cafés.
-        </p>
+        <Empty className="border border-border">
+          <EmptyHeader>
+            <EmptyTitle>No demo cafés nearby</EmptyTitle>
+            <EmptyDescription>
+              No demo cafés {searchArea}. Choose a larger radius or Anywhere,
+              then Search cafés.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <div className="podium">
           {cafes.slice(0, 3).map((cafe, i) => (

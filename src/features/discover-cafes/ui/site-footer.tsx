@@ -1,4 +1,6 @@
 import { SiteLogo } from "@/shared/ui/site-logo";
+import { ArrowUpIcon } from "lucide-react";
+import { Button } from "@/shared/ui/button";
 
 export function SiteFooter() {
   return (
@@ -13,9 +15,14 @@ export function SiteFooter() {
           <br />
           And the people who love them.
         </p>
-        <a href="#top">
-          Back to the top <span aria-hidden="true">↑</span>
-        </a>
+        <Button
+          variant="ghost"
+          nativeButton={false}
+          role="link"
+          render={<a href="#top" />}
+        >
+          Back to the top <ArrowUpIcon aria-hidden="true" />
+        </Button>
       </div>
       <div className="page-width footer-bottom">
         <span>A love letter to coffee in Barcelona.</span>

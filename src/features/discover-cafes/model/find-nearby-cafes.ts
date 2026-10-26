@@ -8,7 +8,6 @@ export function findNearbyCafes({
   center,
   radiusMeters = barcelonaConfig.defaultRadiusMeters,
 }: FindNearbyCafesInput): NearbyCafe[] {
-
   if (
     !barcelonaConfig.radiusOptions.some(
       (option) => option.meters === radiusMeters,
@@ -16,7 +15,7 @@ export function findNearbyCafes({
   ) {
     throw new RangeError("Choose a configured search radius.");
   }
-  
+
   return cafes
     .map((cafe) => ({
       ...cafe,

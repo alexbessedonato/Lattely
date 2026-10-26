@@ -65,6 +65,25 @@ Keep feature entry points explicit through named files. The direct-import rules 
 
 ## Tooling
 
+The `experiment/shadcn-ui` UI experiment uses shadcn's Base UI components in
+`src/shared/ui`, with authored props in `src/shared/ui/types`. `components.json`
+configures direct aliases; the source is adapted from the `base-nova` registry.
+Combobox owns search-center filtering and popup/keyboard behavior; Select owns
+radius selection behavior. The feature supplies options, controlled values, and
+callbacks to its existing draft/submitted reducer. Shared components have no
+knowledge of Barcelona, geolocation, or ranking. Semantic CSS theme tokens live at
+the document root so portaled popups inherit them. See
+[the experiment notes](shadcn-migration.md) for provenance and validation.
+
+The form, draft selection, saved browser location, and submitted search share a
+`SearchLocation` object (`id`, `name`, `center`). Bundled barris already have that
+shape and are used directly. `data/search-locations.ts` supplies the stable default
+location and initial choices. A successful browser lookup creates one location
+object used for both the saved and selected values. Selecting a location passes
+the object through the hook and reducer; submitting snapshots that selection
+without an ID lookup. Coordinates are still validated at the browser-location
+boundary, and bundled centers are covered by dataset tests.
+
 Use npm with a committed lockfile. At scaffolding, select compatible stable releases and an active Node.js LTS supported by Next.js, recording the runtime version. Tailwind CSS 4 uses CSS-first configuration and the Next.js PostCSS integration. Use small explicit runtime checks where data enters the application; TypeScript alone does not validate incoming data.
 
 TanStack Query is selected for asynchronous café-data searches when that slice begins. The current synchronous fixture calculation does not need query/provider wiring. Use Node's built-in test runner for the current pure distance/filtering behavior; introduce Vitest or Playwright when a later ticket needs their additional capabilities. Record actual commands in `package.json` and `README.md`.

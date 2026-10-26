@@ -1,20 +1,20 @@
 import { barcelonaConfig } from "../../../shared/config/barcelona.ts";
-import { barcelonaBarris } from "../data/barcelona-barris.ts";
+import { defaultSearchLocation } from "../data/search-locations.ts";
 import type {
   NearbyDiscoveryAction,
   NearbyDiscoveryState,
 } from "../types/nearby-discovery-state.ts";
+import type { SearchLocation } from "../types/search-location.ts";
 
 export const initialNearbyDiscoveryState: NearbyDiscoveryState = {
-  draftCenterId: "catalunya",
+  draftLocation: defaultSearchLocation,
   draftRadiusMeters: barcelonaConfig.defaultRadiusMeters,
   submitted: {
-    center: barcelonaConfig.fallbackCoordinates,
-    centerName: barcelonaConfig.fallbackName,
+    location: defaultSearchLocation,
     locationLabel: "Default location",
     radiusMeters: barcelonaConfig.defaultRadiusMeters,
   },
-  userCoordinates: null,
+  userLocation: null,
   isLocating: false,
   outcome: null,
 };
@@ -23,24 +23,15 @@ export function nearbyDiscoveryReducer(
   state: NearbyDiscoveryState,
   action: NearbyDiscoveryAction,
 ): NearbyDiscoveryState {
-
   switch (action.type) {
-    // Handle center selection
     case "center-selected":
-      if (
-        action.centerId !== "catalunya" &&
-        !(action.centerId === "user-location" && state.userCoordinates) &&
-        !barcelonaBarris.some((barri) => barri.id === action.centerId)
-      )
-        return state;
       return {
         ...state,
-        draftCenterId: action.centerId,
+        draftLocation: action.location,
         isLocating: false,
         outcome: null,
       };
 
-    // Handle radius selection
     case "radius-selected":
       if (
         !barcelonaConfig.radiusOptions.some(
@@ -50,66 +41,48 @@ export function nearbyDiscoveryReducer(
         return state;
       return { ...state, draftRadiusMeters: action.radiusMeters };
 
-    // Handle location start
     case "location-started":
       return { ...state, isLocating: true, outcome: null };
 
-    // Handle location resolved
     case "location-resolved": {
       if (!state.isLocating) return state;
-      if (action.outcome.status === "fallback") {
-        return {
-          ...state,
-          isLocating: false,
-          outcome: action.outcome,
-          draftCenterId: "catalunya",
-          submitted: {
-            center: barcelonaConfig.fallbackCoordinates,
-            centerName: barcelonaConfig.fallbackName,
-            locationLabel: "Fallback location",
-            radiusMeters: state.draftRadiusMeters,
-          },
-        };
-      }
+      const { outcome } = action;
+      const succeeded = outcome.status === "success";
+      const location: SearchLocation = succeeded
+        ? {
+            id: "user-location",
+            name: "Your location",
+            center: outcome.center,
+          }
+        : defaultSearchLocation;
       return {
         ...state,
         isLocating: false,
-        outcome: action.outcome,
-        userCoordinates: action.outcome.center,
-        draftCenterId: "user-location",
+        outcome,
+        userLocation: succeeded ? location : state.userLocation,
+        draftLocation: location,
         submitted: {
-          center: action.outcome.center,
-          centerName: "your location",
-          locationLabel: "Current location",
+          location,
+          locationLabel: succeeded ? "Current location" : "Fallback location",
           radiusMeters: state.draftRadiusMeters,
         },
       };
     }
 
-    // Handle search submission
     case "search-submitted": {
-      const barri = barcelonaBarris.find(
-        (item) => item.id === state.draftCenterId,
-      );
-      const useUserLocation =
-        state.draftCenterId === "user-location" &&
-        state.userCoordinates !== null;
+      const { draftLocation } = state;
       return {
         ...state,
         isLocating: false,
         outcome: null,
         submitted: {
-          center: useUserLocation
-            ? state.userCoordinates!
-            : (barri?.center ?? barcelonaConfig.fallbackCoordinates),
-          centerName: useUserLocation
-            ? "your location"
-            : (barri?.name ?? barcelonaConfig.fallbackName),
-          locationLabel: useUserLocation
-            ? "Current location"
-            : barri
-              ? "Approximate barri center"
-              : "Selected location",
+          location: draftLocation,
+          locationLabel:
+            draftLocation.id === "user-location"
+              ? "Current location"
+              : draftLocation.id === "catalunya"
+                ? "Selected location"
+                : "Approximate barri center",
           radiusMeters: state.draftRadiusMeters,
         },
       };

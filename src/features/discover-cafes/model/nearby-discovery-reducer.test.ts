@@ -6,6 +6,9 @@ import {
 } from "./nearby-discovery-reducer.ts";
 import { barcelonaBarris } from "../data/barcelona-barris.ts";
 import { barcelonaConfig } from "../../../shared/config/barcelona.ts";
+import { defaultSearchLocation } from "../data/search-locations.ts";
+
+const raval = barcelonaBarris.find((barri) => barri.id === "01")!;
 
 test("radius edits leave displayed results unchanged until Search cafés", () => {
   const draft = nearbyDiscoveryReducer(initialNearbyDiscoveryState, {
@@ -16,7 +19,7 @@ test("radius edits leave displayed results unchanged until Search cafés", () =>
   assert.equal(draft.submitted.radiusMeters, 2000);
   const searched = nearbyDiscoveryReducer(draft, { type: "search-submitted" });
   assert.equal(searched.submitted.radiusMeters, 500);
-  assert.equal(searched.submitted.centerName, "Plaça de Catalunya");
+  assert.equal(searched.submitted.location.name, "Plaça de Catalunya");
 });
 
 test("each failed location request immediately searches the fallback at the selected radius", () => {
@@ -37,7 +40,7 @@ test("each failed location request immediately searches the fallback at the sele
       outcome: { status: "fallback", reason },
     });
     assert.equal(state.isLocating, false);
-    assert.equal(state.draftCenterId, "catalunya");
+    assert.equal(state.draftLocation, defaultSearchLocation);
     assert.equal(state.submitted.locationLabel, "Fallback location");
     assert.equal(state.submitted.radiusMeters, 5000);
     assert.deepEqual(state.outcome, { status: "fallback", reason });
@@ -60,10 +63,11 @@ test("Use my location immediately searches using the latest selected radius", ()
     },
   });
   assert.equal(state.isLocating, false);
-  assert.equal(state.draftCenterId, "user-location");
-  assert.equal(state.submitted.centerName, "your location");
+  assert.equal(state.draftLocation, state.userLocation);
+  assert.equal(state.draftLocation.id, "user-location");
+  assert.equal(state.submitted.location.name, "Your location");
   assert.equal(state.submitted.radiusMeters, null);
-  assert.deepEqual(state.userCoordinates, {
+  assert.deepEqual(state.userLocation?.center, {
     latitude: 41.4058,
     longitude: 2.1568,
   });
@@ -75,10 +79,11 @@ test("a manual barri selection supersedes pending location without changing resu
   });
   state = nearbyDiscoveryReducer(state, {
     type: "center-selected",
-    centerId: "01",
+    location: raval,
   });
+  assert.equal(state.draftLocation, raval);
   assert.equal(state.isLocating, false);
-  assert.equal(state.submitted.centerName, "Plaça de Catalunya");
+  assert.equal(state.submitted.location.name, "Plaça de Catalunya");
   const late = nearbyDiscoveryReducer(state, {
     type: "location-resolved",
     outcome: {
@@ -88,7 +93,8 @@ test("a manual barri selection supersedes pending location without changing resu
   });
   assert.equal(late, state);
   state = nearbyDiscoveryReducer(state, { type: "search-submitted" });
-  assert.equal(state.submitted.centerName, "el Raval");
+  assert.equal(state.submitted.location, raval);
+  assert.equal(state.submitted.location.name, "el Raval");
   assert.equal(state.submitted.locationLabel, "Approximate barri center");
 });
 
@@ -101,18 +107,21 @@ test("a successful location remains available after searching a barri, and a ret
     type: "location-started",
   });
   state = nearbyDiscoveryReducer(state, { type: "location-resolved", outcome });
+  const userLocation = state.userLocation;
+  assert.ok(userLocation);
   state = nearbyDiscoveryReducer(state, {
     type: "center-selected",
-    centerId: "01",
+    location: raval,
   });
   state = nearbyDiscoveryReducer(state, { type: "search-submitted" });
-  assert.equal(state.submitted.centerName, "el Raval");
+  assert.equal(state.submitted.location, raval);
+  assert.equal(state.submitted.location.name, "el Raval");
   state = nearbyDiscoveryReducer(state, {
     type: "center-selected",
-    centerId: "user-location",
+    location: userLocation,
   });
   state = nearbyDiscoveryReducer(state, { type: "search-submitted" });
-  assert.deepEqual(state.submitted.center, outcome.center);
+  assert.deepEqual(state.submitted.location.center, outcome.center);
   state = nearbyDiscoveryReducer(state, { type: "location-started" });
   state = nearbyDiscoveryReducer(state, {
     type: "location-resolved",
@@ -134,7 +143,7 @@ test("submitting during location lookup keeps the chosen center and ignores late
     outcome: { status: "fallback", reason: "timeout" },
   });
   assert.equal(late, state);
-  assert.equal(state.submitted.centerName, "Plaça de Catalunya");
+  assert.equal(state.submitted.location.name, "Plaça de Catalunya");
   assert.equal(state.isLocating, false);
 });
 
@@ -164,12 +173,37 @@ test("all 73 official barris are unique, alphabetical, covered, and usable searc
       );
     const selected = nearbyDiscoveryReducer(initialNearbyDiscoveryState, {
       type: "center-selected",
-      centerId: barri.id,
+      location: barri,
     });
+    assert.equal(selected.draftLocation, barri);
     const searched = nearbyDiscoveryReducer(selected, {
       type: "search-submitted",
     });
-    assert.equal(searched.submitted.centerName, barri.name);
-    assert.deepEqual(searched.submitted.center, barri.center);
+    assert.equal(searched.submitted.location.name, barri.name);
+    assert.deepEqual(searched.submitted.location.center, barri.center);
   }
+});
+
+test("a successful retry replaces the saved location object and keeps it as the draft", () => {
+  let state = nearbyDiscoveryReducer(initialNearbyDiscoveryState, {
+    type: "location-started",
+  });
+  state = nearbyDiscoveryReducer(state, {
+    type: "location-resolved",
+    outcome: {
+      status: "success",
+      center: { latitude: 41.4058, longitude: 2.1568 },
+    },
+  });
+  const previousLocation = state.userLocation;
+  state = nearbyDiscoveryReducer(state, { type: "location-started" });
+  const center = { latitude: 41.387, longitude: 2.17 };
+  state = nearbyDiscoveryReducer(state, {
+    type: "location-resolved",
+    outcome: { status: "success", center },
+  });
+  assert.notEqual(state.userLocation, previousLocation);
+  assert.equal(state.draftLocation, state.userLocation);
+  assert.equal(state.draftLocation.center, center);
+  assert.equal(state.submitted.location.center, center);
 });

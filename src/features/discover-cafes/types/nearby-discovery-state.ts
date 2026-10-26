@@ -1,24 +1,23 @@
-import type { Coordinates } from "@/shared/types/coordinates";
 import type { LocationOutcome } from "@/features/discover-cafes/types/location-outcome";
+import type { SearchLocation } from "@/features/discover-cafes/types/search-location";
 
 export type SubmittedCafeSearch = {
-  center: Coordinates;
-  centerName: string;
+  location: SearchLocation;
   locationLabel: string;
   radiusMeters: number | null;
 };
 
 export type NearbyDiscoveryState = {
-  draftCenterId: string;
+  draftLocation: SearchLocation;
   draftRadiusMeters: number | null;
   submitted: SubmittedCafeSearch;
-  userCoordinates: Coordinates | null;
+  userLocation: SearchLocation | null;
   isLocating: boolean;
   outcome: LocationOutcome | null;
 };
 
 export type NearbyDiscoveryAction =
-  | { type: "center-selected"; centerId: string }
+  | { type: "center-selected"; location: SearchLocation }
   | { type: "radius-selected"; radiusMeters: number | null }
   | { type: "location-started" }
   | { type: "location-resolved"; outcome: LocationOutcome }

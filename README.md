@@ -13,7 +13,7 @@ Built with **Next.js App Router, React, strict TypeScript, and Tailwind CSS 4**.
 - **Choose your distance:** 500 m, 1 km, 2 km, 5 km, 10 km, or Anywhere in the demo dataset.
 - **Highest-rated results:** cafés rank by rating, then review count, distance, and stable ID to resolve ties.
 - **Control when to search:** neighborhood and radius edits wait for “Search cafés.” The displayed results continue to describe the last applied search.
-- **Responsive search pickers:** full-width controls and readable bottom sheets on mobile, with centered dialogs on desktop, large option targets, and a filter for search centers. Keyboard navigation, visible focus, and announced location/result changes support accessible browsing.
+- **Search controls built with shadcn:** a searchable neighborhood combobox and radius select use Base UI for filtering, keyboard navigation, selection, and popup behavior. Full-width mobile controls, visible focus, and announced location/result changes support accessible browsing.
 
 ## Getting started
 
@@ -41,7 +41,7 @@ The initial search shows cafés within 2 km of Plaça de Catalunya. Selecting a 
 
 A finite radius includes cafés at or inside that distance. Anywhere removes the distance filter while retaining distances from the selected center. Because the demo contains only ten fictional cafés, some neighborhood searches return no results; the app never silently expands the radius.
 
-Open either picker to choose an option. Search-center filtering narrows the list of barris; choosing an option updates the form and closes the picker. Escape or the close button dismisses it. Keyboard users can move between options with the arrow keys, Home, and End. Submit “Search cafés” to apply the chosen center and radius.
+Type in Search center to filter the barris, or use its arrow button to browse all choices. Use the arrow keys and Enter to choose an option; Escape dismisses the suggestions. The radius select uses the same standard keyboard selection pattern. Choosing an option updates the form; submit “Search cafés” to apply the chosen center and radius.
 
 Location is requested only after clicking “Use my location.” If permission is denied, the browser cannot provide a usable location within ten seconds, or the coordinates fall outside demo coverage, the app searches around Plaça de Catalunya and explains the fallback. Choosing a center or submitting a search while locating prevents the pending response from overriding the newer choice.
 
@@ -62,7 +62,13 @@ User coordinates stay in memory. The application does not put them in URLs, pers
 - `src/features/discover-cafes/types` — feature-owned TypeScript contracts.
 - `src/shared` — Barcelona configuration, coordinates, and shared UI.
 
-Rendering is separate from state transitions and search calculations. The discovery reducer manages draft and applied selections; the hook manages browser requests; café results are calculated from the submitted search. The current feature needs no data-fetching library or backend.
+Rendering is separate from state transitions and search calculations. The discovery reducer manages draft and applied selections as location objects containing an ID, name, and coordinates; the hook manages browser requests; café results are calculated from the submitted search. The picker uses the same objects directly, without a separate ID-to-name lookup. The current feature needs no data-fetching library or backend.
+
+## UI components
+
+The `experiment/shadcn-ui` branch adopts the Base UI versions of [shadcn/ui](https://ui.shadcn.com/docs). Adapted component source lives in `src/shared/ui`; `components.json` records the registry style and import aliases. Components keep standard interactions and share Lattely's document-level theme tokens, including portaled popups. Buttons, fields, cards, badges, and empty states use the same component foundation.
+
+The [migration notes](docs/shadcn-migration.md) record the agreed scope, source adaptations, validation, and code-size tradeoff. The goal is less custom interaction logic; copied component source still belongs to this repository and needs maintenance. Before adding or updating a component with the shadcn CLI, inspect its diff and adapt authored props/types to the repository's `types` folders. Do not overwrite local sizing and accessibility adjustments blindly.
 
 ## Development checks
 
