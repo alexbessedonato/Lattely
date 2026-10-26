@@ -8,6 +8,7 @@ import {
   nearbyDiscoveryReducer,
 } from "@/features/discover-cafes/model/nearby-discovery-reducer";
 import { requestBrowserLocation } from "@/features/discover-cafes/model/request-browser-location";
+import type { SearchLocation } from "@/features/discover-cafes/types/search-location";
 
 export function useNearbyDiscovery() {
   const [state, dispatch] = useReducer(
@@ -31,9 +32,9 @@ export function useNearbyDiscovery() {
     pending.current = false;
   }
 
-  function selectCenter(centerId: string) {
+  function selectCenter(location: SearchLocation) {
     cancelLocation();
-    dispatch({ type: "center-selected", centerId });
+    dispatch({ type: "center-selected", location });
   }
 
   function selectRadius(radiusMeters: number | null) {
@@ -60,7 +61,7 @@ export function useNearbyDiscovery() {
 
   const cafes = findNearbyCafes({
     cafes: mockCafes,
-    center: state.submitted.center,
+    center: state.submitted.location.center,
     radiusMeters: state.submitted.radiusMeters,
   });
 

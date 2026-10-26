@@ -2,6 +2,7 @@ import { NearbyDiscovery } from "@/features/discover-cafes/ui/nearby-discovery";
 import { Hero } from "@/features/discover-cafes/ui/hero";
 import { SiteFooter } from "@/features/discover-cafes/ui/site-footer";
 import { SiteHeader } from "@/features/discover-cafes/ui/site-header";
+import { Badge } from "@/shared/ui/badge";
 
 export default function Home() {
   return (
@@ -11,8 +12,11 @@ export default function Home() {
       </a>
       <SiteHeader />
       <p className="demo-banner page-width">
-        Demo data · Fictional cafés, simulated ratings, and calculated
-        straight-line distances
+        <Badge variant="secondary" className="mr-2">
+          Demo data
+        </Badge>
+        Fictional cafés, simulated ratings, and calculated straight-line
+        distances
       </p>
       <Hero />
       <NearbyDiscovery />

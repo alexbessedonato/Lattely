@@ -1,12 +1,13 @@
 import type { LocationOutcome } from "@/features/discover-cafes/types/location-outcome";
+import type { SearchLocation } from "@/features/discover-cafes/types/search-location";
 
 export type SearchControlsProps = {
-  centerId: string;
+  location: SearchLocation;
   radiusMeters: number | null;
-  hasUserLocation: boolean;
+  userLocation: SearchLocation | null;
   isLocating: boolean;
   outcome: LocationOutcome | null;
-  onCenterChange: (centerId: string) => void;
+  onCenterChange: (location: SearchLocation) => void;
   onRadiusChange: (radiusMeters: number | null) => void;
   onSearch: () => void;
   onUseMyLocation: () => void;

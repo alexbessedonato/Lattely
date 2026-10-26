@@ -1,4 +1,6 @@
 import { CoffeeArt } from "@/features/discover-cafes/ui/coffee-art";
+import { ArrowDownRightIcon } from "lucide-react";
+import { Button } from "@/shared/ui/button";
 
 export function Hero() {
   return (
@@ -20,9 +22,15 @@ export function Hero() {
           <br />
           Find your kind of coffee, right here in Barcelona.
         </p>
-        <a className="hero-link" href="#ranking">
-          Meet your next favorite <span aria-hidden="true">↘</span>
-        </a>
+        <Button
+          variant="link"
+          nativeButton={false}
+          role="link"
+          render={<a href="#ranking" />}
+          className="mt-4 gap-10 rounded-none border-0 border-b border-current px-0"
+        >
+          Meet your next favorite <ArrowDownRightIcon aria-hidden="true" />
+        </Button>
       </div>
       <div className="hero-visual">
         <span className="visual-label">THE DAILY RITUAL</span>

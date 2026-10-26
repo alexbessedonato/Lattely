@@ -7,12 +7,13 @@ import { CoffeeRanking } from "@/features/discover-cafes/ui/coffee-ranking";
 export function NearbyDiscovery() {
   const { state, cafes, selectCenter, selectRadius, search, useMyLocation } =
     useNearbyDiscovery();
+
   return (
     <>
       <SearchControls
-        centerId={state.draftCenterId}
+        location={state.draftLocation}
         radiusMeters={state.draftRadiusMeters}
-        hasUserLocation={state.userCoordinates !== null}
+        userLocation={state.userLocation}
         outcome={state.outcome}
         isLocating={state.isLocating}
         onCenterChange={selectCenter}
@@ -20,9 +21,10 @@ export function NearbyDiscovery() {
         onSearch={search}
         onUseMyLocation={useMyLocation}
       />
+
       <CoffeeRanking
         cafes={cafes}
-        centerName={state.submitted.centerName}
+        centerName={state.submitted.location.name}
         locationLabel={state.submitted.locationLabel}
         radiusMeters={state.submitted.radiusMeters}
       />
