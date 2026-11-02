@@ -1,5 +1,5 @@
 # Lattely
-
+ 
 Find your next good coffee in Barcelona. Lattely is a café discovery demo with neighborhood search, browser geolocation, and recommendations ranked by rating.
 
 Built with **Next.js App Router, React, strict TypeScript, and Tailwind CSS 4**.
